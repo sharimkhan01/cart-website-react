@@ -27,7 +27,7 @@ const SignUpForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (password != confirmPassword) {
+    if (password !== confirmPassword) {
       alert("password do not match");
       return;
     }
@@ -37,11 +37,17 @@ const SignUpForm = () => {
         email,
         password
       );
-
+      //since when we auth we are not using the displayName, so in order to store the name we need to utilize it from the form and store it in the database.
+      // below is the code to store the displayName
+      // displayName was destructured above from the formfields
       await createUserDocumentFromAuth(user, { displayName });
       resetFormFields();
     } catch (error) {
-      console.log("user creation encountered error", error);
+      if (error.code === "auth/email-already-in-use") {
+        alert("Cannot create user,email already in use");
+      } else {
+        console.log("user creation encountered error", error);
+      }
     }
   };
 
